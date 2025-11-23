@@ -1,6 +1,7 @@
 package com.controleestoque.api_estoque.model;
 
 import java.math.BigDecimal;
+
 import java.util.Set;
 
 import jakarta.persistence.Entity;
