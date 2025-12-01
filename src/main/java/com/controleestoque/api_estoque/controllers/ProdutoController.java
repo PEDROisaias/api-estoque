@@ -65,17 +65,27 @@ public class ProdutoController {
         // 2. Gerenciamento do N:M (Fornecedores)
         // Similarmente, buscamos cada fornecedor para garantir que existem
         if (produto.getFornecedores() != null && !produto.getFornecedores().isEmpty()) {
+            
+            var idsFornecedores = produto.getFornecedores().stream().map(f -> f.getId()).toList();
+            
             // Cria um Set para armazenar fornecedores gerenciados
             produto.getFornecedores().clear();
 
-            produto.getFornecedores().forEach(fornecedor -> {
-                fornecedorRepository.findById(fornecedor.getId())
-                        .ifPresent(produto.getFornecedores()::add); // Adiciona fornecedor gerenciado
+            idsFornecedores.forEach(id -> {
+                fornecedorRepository.findById(id).ifPresent(f -> produto.getFornecedores().add(f));
             });
+
+            // produto.getFornecedores().forEach(fornecedor -> {
+            //     fornecedorRepository.findById(fornecedor.getId())
+            //             .ifPresent(produto.getFornecedores()::add); // Adiciona fornecedor gerenciado
+            // });
         }
 
         // 3. Salva o produto com as associações corretas (e o estoque se ocascade
         // estiver configurado)
+        if (produto.getEstoque() != null) {
+            produto.getEstoque().setProduto(produto);
+        }
         Produto savedProduto = produtoRepository.save(produto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduto);
