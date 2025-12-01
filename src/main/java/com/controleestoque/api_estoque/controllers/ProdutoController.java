@@ -2,7 +2,6 @@ package com.controleestoque.api_estoque.controllers;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.controleestoque.api_estoque.model.Categoria;
 import com.controleestoque.api_estoque.model.Produto;
 import com.controleestoque.api_estoque.repositories.CategoriaRepository;
 import com.controleestoque.api_estoque.repositories.FornecedorRepository;
@@ -58,7 +56,7 @@ public class ProdutoController {
     public ResponseEntity<Produto> createProduto(@RequestBody Produto produto) {
         // 1. Gerenciamento do 1:N (Categoria)
         // A categoria deve ser buscada do banco para garantir que existe
-        if (produto.getCategoria() != null || produto.getCategoria().getId() != null) {
+        if (produto.getCategoria() == null || produto.getCategoria().getId() == null) {
             return ResponseEntity.badRequest().build(); // Categoria é obrigatória
         }
         categoriaRepository.findById(produto.getCategoria().getId())
